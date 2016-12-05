@@ -8,16 +8,74 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- Main plugins versions -->
+		
+		<!-- MAVEN PLUGIN VERSIONS -->
 		<maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+		<properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
 		<exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
 		<minify-maven-plugin.version>1.7.5</minify-maven-plugin.version>
-		<!-- ExtJs configuration -->
-		<sencha.cmd.executable>${env.SENCHA_CMD_6}/sencha</sencha.cmd.executable>
+		<jooq-codegen-maven.version>3.5.3</jooq-codegen-maven.version>
+		<jasperreports-maven-plugin.version>1.0.22</jasperreports-maven-plugin.version>
+		
+		<!-- SENCHA CONFIGURATION (loaded from "sencha.properties") -->
+		<!--
+			Sencha CMD (version 6) path in which to find CMD executable (loaded from "sencha.properties")
+		<sencha.cmd.v6></sencha.cmd.v6>
+		
+			Path of the ExtJs SDK (loaded from "sencha.properties")
+		<sencha.extjs.sdk></sencha.extjs.sdk>
+		-->
+		
+		<!-- WEBTOP SERVICE CONFIGURATION -->
+		<webtop.service.package></webtop.service.package>
+		<webtop.service.jsPackage></webtop.service.jsPackage>
+		
+		<!-- WEBTOP SERVICE CONFIGURATION (loaded from "webtop.properties") -->
+		<!--
+			ExtJs classpath string to apply to -classpath argument
+		<webtop.sencha.compile.classpath></webtop.sencha.compile.classpath>
+		
+			JDBC Driver to use in JOOQ configuration
+		<webtop.service.db.jdbc.driver></webtop.service.db.jdbc.driver>
+		
+			JDBC Driver to use in JOOQ configuration
+		<webtop.service.db.jdbc.url></webtop.service.db.jdbc.url>
+		
+			JDBC Driver to use in JOOQ configuration
+		<webtop.service.db.jdbc.user></webtop.service.db.jdbc.user>
+		
+			JDBC Driver to use in JOOQ configuration
+		<webtop.service.db.jdbc.password></webtop.service.db.jdbc.password>
+		
+			DB Schema to use in JOOQ configuration
+		<webtop.service.db.schema></webtop.service.db.schema>
+		-->
 	</properties>
 	
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>${properties-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>read-properties</id>
+						<phase>none</phase>
+						<goals>
+							<goal>read-project-properties</goal>
+						</goals>
+						<configuration>
+							<files>
+								<file>${user.home}/.m2/sencha.properties</file>
+								<file>${user.home}/.m2/webtop.properties</file>
+								<file>${user.home}/.m2/webtop-core.properties</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -45,12 +103,95 @@
 				<version>2.5</version>
 			</plugin>
 			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+				<version>${jooq-codegen-maven.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>9.3-1102-jdbc4</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>generate-db-classes</id>
+						<phase>none</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<jdbc>
+								<driver>${webtop.service.db.jdbc.driver}</driver>
+								<url>${webtop.service.db.jdbc.url}</url>
+								<user>${webtop.service.db.jdbc.user}</user>
+								<password>${webtop.service.db.jdbc.password}</password>
+							</jdbc>
+							<generator>
+								<database>
+									<name>org.jooq.util.postgres.PostgresDatabase</name>
+									<includes>.*</includes>
+									<excludes></excludes>
+									<inputSchema>${webtop.service.db.schema}</inputSchema>
+									<customTypes>
+										<customType>
+											<name>JodaLocalDate</name>
+											<type>org.joda.time.LocalDate</type>
+											<converter>com.sonicle.webtop.core.jooq.LocalDateConverter</converter>
+										</customType>
+										<customType>
+											<name>JodaDateTime</name>
+											<type>org.joda.time.DateTime</type>
+											<converter>com.sonicle.webtop.core.jooq.DateTimeConverter</converter>
+										</customType>
+									</customTypes>
+									<forcedTypes>
+										<forcedType>
+											<name>JodaLocalDate</name>
+											<expression>.*</expression>
+											<types>date.*</types>
+										</forcedType>
+										<forcedType>
+											<name>JodaDateTime</name>
+											<expression>.*</expression>
+											<types>timestamp.*</types>
+										</forcedType>
+									</forcedTypes>
+								</database>
+								<generate>
+									<pojos>true</pojos>
+									<immutablePojos>false</immutablePojos>
+								</generate>
+								<target>
+									<packageName>${webtop.service.package}.jooq</packageName>
+									<directory>${project.build.directory}/generated-sources/jooq</directory>
+								</target>
+							</generator>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.10</version>
-				<configuration>
-					<skipTests>true</skipTests>
-				</configuration>
+				<executions>
+					<execution>
+						<id>default-test</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
