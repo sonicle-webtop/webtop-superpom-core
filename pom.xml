@@ -23,8 +23,8 @@
 			Sencha CMD (version 6) path in which to find CMD executable (loaded from "sencha.properties")
 		<sencha.cmd.v6></sencha.cmd.v6>
 		
-			Path of the ExtJs SDK (loaded from "sencha.properties")
-		<sencha.extjs.sdk></sencha.extjs.sdk>
+			Path of the workspace (loaded from "sencha.properties")
+		<sencha.workspace></sencha.workspace>
 		-->
 		
 		<!-- WEBTOP SERVICE CONFIGURATION -->
