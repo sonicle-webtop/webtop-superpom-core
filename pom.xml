@@ -66,7 +66,6 @@
 						<configuration>
 							<files>
 								<file>${user.home}/.m2/sencha.properties</file>
-								<file>${user.home}/.m2/webtop.properties</file>
 								<file>${user.home}/.m2/webtop-core.properties</file>
 							</files>
 						</configuration>
