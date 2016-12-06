@@ -10,20 +10,20 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
 		<!-- MAVEN PLUGIN VERSIONS -->
-		<maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
 		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
 		<properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
+		<maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
 		<exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
 		<minify-maven-plugin.version>1.7.5</minify-maven-plugin.version>
 		<jooq-codegen-maven.version>3.5.3</jooq-codegen-maven.version>
 		<jasperreports-maven-plugin.version>1.0.22</jasperreports-maven-plugin.version>
 		
-		<!-- SENCHA CONFIGURATION (loaded from "sencha.properties") -->
+		<!-- SENCHA CONFIGURATION (loaded from "${user.home}/.m2/sencha.properties") -->
 		<!--
 			Sencha CMD (version 6) path in which to find CMD executable (loaded from "sencha.properties")
 		<sencha.cmd.v6></sencha.cmd.v6>
 		
-			Path of the workspace (loaded from "sencha.properties")
+			Path of the workspace
 		<sencha.workspace></sencha.workspace>
 		-->
 		
@@ -31,11 +31,8 @@
 		<webtop.service.package></webtop.service.package>
 		<webtop.service.jsPackage></webtop.service.jsPackage>
 		
-		<!-- WEBTOP SERVICE CONFIGURATION (loaded from "webtop.properties") -->
+		<!-- WEBTOP SERVICE CONFIGURATION (loaded from "${user.home}/.m2/${artifactId}.properties") -->
 		<!--
-			ExtJs classpath string to apply to -classpath argument
-		<webtop.sencha.compile.classpath></webtop.sencha.compile.classpath>
-		
 			JDBC Driver to use in JOOQ configuration
 		<webtop.service.db.jdbc.driver></webtop.service.db.jdbc.driver>
 		
