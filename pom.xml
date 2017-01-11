@@ -128,7 +128,14 @@
 									<name>org.jooq.util.postgres.PostgresDatabase</name>
 									<includes>.*</includes>
 									<excludes></excludes>
-									<inputSchema>${webtop.service.db.schema}</inputSchema>
+									<schemata>
+										<schema>
+											<inputSchema>${webtop.service.db.schema}</inputSchema>
+										</schema>
+										<schema>
+											<inputSchema>config</inputSchema>
+										</schema>
+									</schemata>
 									<customTypes>
 										<customType>
 											<name>JodaLocalDate</name>
