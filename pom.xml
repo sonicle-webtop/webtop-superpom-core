@@ -97,6 +97,30 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>${maven-clean-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>clean-gen-swagger</id>
+						<phase>none</phase>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+						<configuration>
+							<filesets>
+								<fileset>
+									<directory>src/gen/swagger</directory>
+									<includes>
+										<include>**/*</include>
+									</includes>
+								</fileset>
+							</filesets>
+						</configuration>
+					</execution>
+				</executions>		
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>properties-maven-plugin</artifactId>
 				<version>${properties-maven-plugin.version}</version>
@@ -128,9 +152,62 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>${build-helper-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<!--<source>src/gen/jooq</source>-->
+								<source>src/gen/swagger</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>${maven-antrun-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>build-properties</id>
+						<phase>none</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<exportAntProperties>true</exportAntProperties>
+							<target>
+								<script language="javascript">
+								<![CDATA[
+									var value = project.getProperty('webtop.service.package') || '';
+									value = value.replaceAll('\\.', '/');
+									project.setProperty('webtop.service.package.path', value);
+								]]>
+								</script>
+								<script language="javascript">
+								<![CDATA[
+									var value = project.getProperty('webtop.service.restApi.oas') || '';
+									value = value.replaceAll('openapi-', '');
+									value = value.replaceAll('.json', '');
+									value = value.replaceAll('.yaml', '');
+									project.setProperty('webtop.service.restApi.oas.context', value);
+								]]>
+								</script>
+								<!--
+								<echo>webtop.service.package.path: ${webtop.service.package.path}</echo>
+								<echo>webtop.service.restApi.oas.context: ${webtop.service.restApi.oas.context}</echo>
+								-->
+							</target>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -224,6 +301,35 @@
 									<directory>src/main/java</directory>
 								</target>
 							</generator>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>io.swagger</groupId>
+				<artifactId>swagger-codegen-maven-plugin</artifactId>
+				<version>${swagger-codegen-maven-plugin.version}</version>
+				<!--<version>3.0.0-SNAPSHOT</version>-->
+				<executions>
+					<execution>
+						<id>generate-oas-classes</id>
+						<phase>none</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>src/main/resources/${webtop.service.package.path}/${webtop.service.restApi.oas}</inputSpec>
+							<language>jaxrs-spec</language>
+							<templateDirectory>.swagger-codegen/templates/jaxrs-spec</templateDirectory>
+							<output>.</output>
+							<addCompileSourceRoot>false</addCompileSourceRoot>
+							<generateSupportingFiles>false</generateSupportingFiles>
+							<configOptions>
+								<!--<dateLibrary>java8</dateLibrary>-->
+								<sourceFolder>src/gen/swagger</sourceFolder>
+								<apiPackage>${webtop.service.package}.swagger.${webtop.service.restApi.oas.context}.api</apiPackage>
+								<modelPackage>${webtop.service.package}.swagger.${webtop.service.restApi.oas.context}.model</modelPackage>
+							</configOptions>
 						</configuration>
 					</execution>
 				</executions>
