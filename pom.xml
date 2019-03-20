@@ -202,6 +202,30 @@
 									project.setProperty('webtop.service.restApi.oas.context', value);
 								]]>
 								</script>
+								<script language="javascript">
+								<![CDATA[
+									var scc = [],
+										swcc = [],
+										wksp = project.getProperty('sencha.workspace') || '';
+									
+									scc.push(wksp + '/ext/packages/core/src');
+									scc.push(wksp + '/ext/packages/core/overrides');
+									scc.push(wksp + '/ext/classic/classic/src');
+									scc.push(wksp + '/ext/classic/classic/overrides');
+									scc.push(wksp + '/ext/packages/ux/src');
+									scc.push(wksp + '/ext/packages/ux/overrides');
+									scc.push(wksp + '/ext/packages/ux/classic/src');
+									scc.push(wksp + '/ext/packages/ux/classic/overrides');
+									scc.push(wksp + '/ext/packages/charts/src');
+									scc.push(wksp + '/ext/packages/charts/overrides');
+									scc.push(wksp + '/ext/packages/charts/classic/src');
+									scc.push(wksp + '/ext/packages/charts/classic/overrides');
+									project.setProperty('sencha.compile.classpath', scc.join(','));
+									
+									swcc.push(wksp + '/packages/local/sonicle-extensions/src');
+									project.setProperty('sencha.compile.wt.classpath', swcc.join(','));
+								]]>
+								</script>
 								<!--
 								<echo>webtop.service.package.path: ${webtop.service.package.path}</echo>
 								<echo>webtop.service.restApi.oas.context: ${webtop.service.restApi.oas.context}</echo>
