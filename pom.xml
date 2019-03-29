@@ -233,6 +233,26 @@
 							</target>
 						</configuration>
 					</execution>
+					<execution>
+						<id>replace-manifest-variables</id>
+						<phase>none</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<tstamp>
+									<format property="webtop.service.buildDate" pattern="yyyy-MM-dd" />
+								</tstamp>
+								<echo>Updating manifest variables</echo>
+								<replace file="${project.build.outputDirectory}/META-INF/webtop-services.xml">
+									<replacefilter token="@@webtop.service.version@@" value="${project.version}" />
+									<replacefilter token="@@webtop.service.buildDate@@" value="${webtop.service.buildDate}" />
+									<replacefilter token="@@webtop.service.buildType@@" value="${webtop.service.buildType}" />
+								</replace>
+							</target>	
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
