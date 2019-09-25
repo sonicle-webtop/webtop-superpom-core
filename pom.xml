@@ -24,7 +24,7 @@
 		<swagger-codegen-maven-plugin.version>2.3.1</swagger-codegen-maven-plugin.version>
 		
 		<!-- JAVA DEPENDENCIES VERSIONS -->
-		<atmosphere.version>2.4.20</atmosphere.version>
+		<atmosphere.version>2.4.32</atmosphere.version>
 		<commons-collections4.version>4.2</commons-collections4.version>
 		<commons-io.version>2.4</commons-io.version>
 		<commons-vfs2.version>2.2</commons-vfs2.version>
