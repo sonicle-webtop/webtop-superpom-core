@@ -27,6 +27,11 @@
 			Path of the workspace (loaded from target properties file)
 		<sencha.workspace></sencha.workspace>
 		-->
+		<!-- SENCHA: integration (taken from cmd-line) -->
+		<!--
+			Custom cmd-line arguments to append to Sencha executable
+		<sencha.cmd.exec.args></sencha.cmd.exec.args>
+		-->
 		
 		<!-- WEBTOP: service configuration -->
 		<webtop.service.package>com.sonicle.webtop.core</webtop.service.package>
@@ -157,6 +162,7 @@
 						<configuration>
 							<exportAntProperties>true</exportAntProperties>
 							<target>
+								<taskdef resource="net/sf/antcontrib/antlib.xml" />
 								<echo>Evaluating deprecated properties</echo>
 								<script language="javascript">
 								<![CDATA[
@@ -206,6 +212,24 @@
 									project.setProperty('sencha.compile.wt.classpath', swcc.join(','));
 								]]>
 								</script>
+								<condition property="isWindows">
+									<os family="windows" />
+								</condition>
+								<if>
+									<equals arg1="${isWindows}" arg2="true" />
+									<then>
+										<property name="sencha.cmd.exec" value="sencha.exe" />
+									</then>
+									<else>
+										<property name="sencha.cmd.exec" value="sencha" />
+									</else>
+								</if>
+								<echo>Using:</echo>
+								<echo>sencha.properties.target: ${sencha.properties.target}</echo>
+								<echo>sencha.cmd: ${sencha.cmd}</echo>
+								<echo>sencha.workspace: ${sencha.workspace}</echo>
+								<echo>sencha.cmd.exec: ${sencha.cmd.exec}</echo>
+								<echo>sencha.cmd.exec.args: ${sencha.cmd.exec.args}</echo>
 								<!--
 								<echo>webtop.service.package.path: ${webtop.service.package.path}</echo>
 								<echo>webtop.service.restApi.oas.context: ${webtop.service.restApi.oas.context}</echo>
@@ -234,6 +258,19 @@
 						</configuration>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>1.0b3</version>
+						<exclusions>
+							<exclusion>
+								<artifactId>ant</artifactId>
+								<groupId>ant</groupId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
