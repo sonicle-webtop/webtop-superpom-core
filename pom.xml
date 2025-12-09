@@ -37,7 +37,7 @@
 		<webtop.service.package>com.sonicle.webtop.core</webtop.service.package>
 		<webtop.service.jsPackage>Sonicle.webtop.core</webtop.service.jsPackage>
 		
-		<!-- WEBTOP: service configuration (loaded from "${user.home}/.m2/${artifactId}.properties") -->
+		<!-- WEBTOP: service configuration (loaded from "${user.home}/.m2/${webtop.service.baseArtifact}.properties") -->
 		<!--
 			JDBC Driver to use in JOOQ configuration
 		<webtop.service.db.jdbc.driver></webtop.service.db.jdbc.driver>
